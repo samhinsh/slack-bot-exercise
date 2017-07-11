@@ -34,6 +34,7 @@ slackEvents.on('reaction_added', (event) => {
 });
 
 slackMessages.action('emoji', (payload) => {
+  console.log(payload)
 	// Original message to modify
 	const replacement = payload.original_message;
 
