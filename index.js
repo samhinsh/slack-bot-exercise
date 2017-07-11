@@ -17,11 +17,21 @@ app.use('/slack/actions', slackMessages.expressMiddleware());
 
 const bot = new WebClient(process.env.SLACK_BOT_TOKEN);
 const web = new WebClient(process.env.SLACK_AUTH_TOKEN);
+let authID;
 
 const PORT = process.env.PORT || 4390;
 
+
+
 app.listen(PORT, function() {
 	console.log("Bot listening on port " + PORT);
+  web.auth.test((err, res) => {
+    console.log(res)
+    if (res.ok) {
+      console.log(res.user_id)
+      authID = res.user_id;
+    }
+  });
 });
 
 let users = [];
@@ -46,10 +56,18 @@ slackMessages.action('emoji', (payload) => {
 		replacement.text = `Yikes :stuck_out_tongue_winking_eye:`;
   		delete replacement.attachments;
   		//check if userID
+    console.log(payload.user.id)
+    console.log(authID)
   		if (users[payload.user.id]) {
-  			web.channels.kick(users[payload.user.id])
+        if (authID != payload.user.id) {
+          web.channels.kick(users[payload.user.id])
   				.then((info) => { console.log(info) })
   				.catch(console.error);
+        } else {
+          web.channels.leave(users[payload.user.id])
+  				.then((info) => { console.log(info) })
+  				.catch(console.error);
+        }
   		}
   		
   		return replacement;
