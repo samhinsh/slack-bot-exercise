@@ -26,9 +26,7 @@ const PORT = process.env.PORT || 4390;
 app.listen(PORT, function() {
 	console.log("Bot listening on port " + PORT);
   web.auth.test((err, res) => {
-    console.log(res)
     if (res.ok) {
-      console.log(res.user_id)
       authID = res.user_id;
     }
   });
@@ -56,8 +54,6 @@ slackMessages.action('emoji', (payload) => {
 		replacement.text = `Yikes :stuck_out_tongue_winking_eye:`;
   		delete replacement.attachments;
   		//check if userID
-    console.log(payload.user.id)
-    console.log(authID)
   		if (users[payload.user.id]) {
         if (authID != payload.user.id) {
           web.channels.kick(users[payload.user.id])
