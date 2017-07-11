@@ -46,7 +46,7 @@ slackMessages.action('emoji', (payload) => {
   		delete replacement.attachments;
   		//check if userID
   		if (users[payload.user.id]) {
-  			web.channels.leave(users[payload.user.id])
+  			web.channels.kick(users[payload.user.id])
   				.then((info) => { console.log(info) })
   				.catch(console.error);
   		}
