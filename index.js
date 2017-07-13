@@ -17,22 +17,21 @@ app.use('/slack/actions', slackMessages.expressMiddleware());
 
 const bot = new WebClient(process.env.SLACK_BOT_TOKEN);
 const web = new WebClient(process.env.SLACK_AUTH_TOKEN);
+
 let authID;
+let users = [];
 
 const PORT = process.env.PORT || 4390;
 
-
-
+// Starts server and tracks authorized user
 app.listen(PORT, function() {
 	console.log("Bot listening on port " + PORT);
-  web.auth.test((err, res) => {
-    if (res.ok) {
-      authID = res.user_id;
-    }
-  });
+	web.auth.test((err, res) => {
+		if (res.ok) {
+			authID = res.user_id;
+		}
+	});
 });
-
-let users = [];
 
 slackEvents.on('reaction_added', (event) => {
 	// Reaction added, send reaction as message
@@ -65,7 +64,6 @@ slackMessages.action('emoji', (payload) => {
   				.catch(console.error);
         }
   		}
-  		
   		return replacement;
 	}
 });
